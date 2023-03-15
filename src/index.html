@@ -1,0 +1,129 @@
+<html>
+<head>
+  <title>Firebase cloud singin</title>
+    <script ype="module" src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
+    <script ype="module" src="https://www.gstatic.com/firebasejs/8.0.1/firebase-auth.js"></script>
+    <script ype="module" src="https://www.gstatic.com/firebasejs/8.0.1/firebase-firestore.js"></script>
+    <script ype="module" src="https://www.gstatic.com/firebasejs/8.0.1/firebase-functions.js"></script>
+</head>
+<body>
+<h1>Firebase Cloud Signin with email & password </h1>
+<h3>Email: tamil.selvan@angkas.com</h3>
+<h3>Password: password</h3>
+<br>
+
+<!--<button class="signup" nclick="signUp()">SignUp</button>-->
+<button class="login">Login</button>
+
+<table><tr><td>
+  <textarea id="token" rows="30" cols="100"></textarea>
+</td><td>
+  <div id="user"></div>
+</td></tr></table>
+
+<br>
+<script type="module">
+
+  // Import the functions you need from the SDKs
+ // import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+ // import { getAuth,signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
+
+  // Firebase config 
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4NJMwURNNCDqOHSdPH8d4txGwbnUyqSc",
+    authDomain: "fir-app-fd1be.firebaseapp.com",
+    projectId: "fir-app-fd1be",
+    storageBucket: "fir-app-fd1be.appspot.com",
+    messagingSenderId: "836857438453",
+    appId: "1:836857438453:web:ea990037f0f0ac2e9fa5bc",
+    measurementId: "G-758QRPPRX8"
+  };
+
+  // Initialize Firebase app
+
+  //const firebase = initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
+
+  const loginBut = document.querySelector(".login");
+  loginBut.addEventListener('click',()=>{
+
+    var email="tamil.selvan@angkas.com";
+    var password="password";
+
+ // return false;
+ /*
+  const auth = getAuth();
+  signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    console.log("logged in succesfully");
+    console.log(user);
+    document.getElementById("token").value=user.accessToken;
+
+    const token =  auth.currentUser.getIdToken().then(function token(t){
+        document.getElementById("token").value=t
+    });
+
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorMessage);
+    document.getElementById("token").value=errorMessage;
+  });
+  */
+
+  firebase
+    .auth()
+    .signInWithEmailAndPassword(email, password)
+    .then(({ user }) => {
+      return user.getIdToken().then((idToken) => {
+        console.log(idToken);
+        document.getElementById("token").value=idToken
+        return fetch('/resources', {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+        })
+          .then((resp) => resp.json())
+          .then((resp) => {
+            //const html = displayQuotes(resp);
+            console.log(resp);
+           // document.getElementById("user").innerHTML = resp;
+           
+          })
+          .catch((err) => {
+            console.error(err.message);
+            error.innerHTML = err.message;
+          });
+      });
+    })
+    .catch((err) => {
+      console.error(err.message);
+      error.innerHTML = err.message;
+    });
+
+  });
+
+    firebase
+    .auth().onAuthStateChanged(user=>{
+      console.log("onAuthStateChanged");
+      console.log(user);
+      document.getElementById("user").innerHTML = "ID: "+user.uid+"<br>EMAIL: "+user.email;
+    });
+
+    const but = document.querySelector(".signup");
+    but.addEventListener('click',()=>{
+      const res = firebase.functions().httpsCallable('callSignUp');
+      res().then(result=>{
+        console.log("callable response");
+        console.log(result);
+      });
+    });
+
+</script>
+</body>
+</html>
