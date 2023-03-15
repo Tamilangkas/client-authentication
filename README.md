@@ -3,8 +3,8 @@
 Installation steps:
 ===================
 
-  npm install -g firebase-tools
-  npm install firebase-functions@latest firebase-admin@latest --save
+ - npm install -g firebase-tools
+ - npm install firebase-functions@latest firebase-admin@latest --save
 
   To Run:
   =======
@@ -12,13 +12,13 @@ Installation steps:
     serve src/
 
   
-    Access in browser:
-    ------------------
+ Access in browser:
+ ------------------
   
         URL: http://localhost:3000/
 
 
-    Verify the Token in JWT:
-    ------------------------------
-            https://jwt.io/
+ Verify the Token in JWT:
+ ------------------------------
+        https://jwt.io/
           
